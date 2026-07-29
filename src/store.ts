@@ -25,6 +25,12 @@ interface StoreState {
   addTodo: (text: string, date: string) => void
   toggleTodo: (id: string) => void
   deleteTodo: (id: string) => void
+  challenge: string
+  setChallenge: (v: string) => void
+  knowledge: string
+  setKnowledge: (v: string) => void
+  ideas: string
+  setIdeas: (v: string) => void
 }
 
 export const useStore = create<StoreState>()(
@@ -58,6 +64,12 @@ export const useStore = create<StoreState>()(
         set((state) => ({
           todos: state.todos.filter((t) => t.id !== id),
         })),
+      challenge: '',
+      setChallenge: (v) => set({ challenge: v }),
+      knowledge: '',
+      setKnowledge: (v) => set({ knowledge: v }),
+      ideas: '',
+      setIdeas: (v) => set({ ideas: v }),
     }),
     { name: 'workbench-storage' }
   )
