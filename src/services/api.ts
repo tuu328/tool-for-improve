@@ -78,16 +78,16 @@ export interface ExamItem {
 }
 
 const EXAM_DATA: ExamItem[] = [
-  { id: 'ncre', name: '全国计算机等级考试（NCRE）', registrationDate: '2025-01-04', examDate: '2025-03-29', org: '教育部考试中心', category: 'IT' },
-  { id: 'cetc', name: '大学英语四六级（CET）', registrationDate: '2025-03-15', examDate: '2025-06-14', org: '教育部考试中心', category: '语言' },
-  { id: 'cpa', name: '注册会计师（CPA）', registrationDate: '2025-04-01', examDate: '2025-08-23', org: '中国注册会计师协会', category: '财会' },
-  { id: 'cfa1', name: 'CFA 一级', registrationDate: '2025-05-01', examDate: '2025-08-20', org: 'CFA Institute', category: '金融' },
+  { id: 'ncre', name: '全国计算机等级考试（NCRE）', registrationDate: '2026-06-20', examDate: '2026-09-20', org: '教育部考试中心', category: 'IT' },
+  { id: 'cetc', name: '大学英语四六级（CET）', registrationDate: '2026-09-10', examDate: '2026-12-14', org: '教育部考试中心', category: '语言' },
+  { id: 'cpa', name: '注册会计师（CPA）', registrationDate: '2026-04-01', examDate: '2026-08-23', org: '中国注册会计师协会', category: '财会' },
+  { id: 'cfa1', name: 'CFA 一级', registrationDate: '2026-05-01', examDate: '2026-08-20', org: 'CFA Institute', category: '金融' },
   { id: 'pmp', name: 'PMP 项目管理', registrationDate: '全年', examDate: '每月', org: 'PMI', category: '管理' },
-  { id: 'nca', name: '网络工程师（软考中级）', registrationDate: '2025-03-01', examDate: '2025-05-24', org: '工信部 + 人社部', category: 'IT' },
-  { id: 'teacher', name: '教师资格证', registrationDate: '2025-01-12', examDate: '2025-03-08', org: '教育部考试中心', category: '教育' },
-  { id: 'law', name: '法律职业资格考试', registrationDate: '2025-06-10', examDate: '2025-09-20', org: '司法部', category: '法律' },
-  { id: 'acca', name: 'ACCA', registrationDate: '全年', examDate: '3/6/9/12月', org: 'ACCA', category: '财会' },
-  { id: 'architect', name: '一级建造师', registrationDate: '2025-06-20', examDate: '2025-09-20', org: '住建部', category: '工程' },
+  { id: 'nca', name: '网络工程师（软考中级）', registrationDate: '2026-08-20', examDate: '2026-11-08', org: '工信部 + 人社部', category: 'IT' },
+  { id: 'teacher', name: '教师资格证', registrationDate: '2026-07-01', examDate: '2026-09-13', org: '教育部考试中心', category: '教育' },
+  { id: 'law', name: '法律职业资格考试', registrationDate: '2026-06-10', examDate: '2026-09-20', org: '司法部', category: '法律' },
+  { id: 'acca', name: 'ACCA', registrationDate: '全年', examDate: '9/12月', org: 'ACCA', category: '财会' },
+  { id: 'architect', name: '一级建造师', registrationDate: '2026-06-20', examDate: '2026-09-20', org: '住建部', category: '工程' },
 ]
 
 export function fetchExams(): ExamItem[] {
