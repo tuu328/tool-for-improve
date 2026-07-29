@@ -12,6 +12,12 @@ interface Todo {
   date: string
 }
 
+interface Note {
+  id: string
+  text: string
+  createdAt: string
+}
+
 interface StoreState {
   activeTab: Tab
   setActiveTab: (tab: Tab) => void
@@ -25,17 +31,20 @@ interface StoreState {
   addTodo: (text: string, date: string) => void
   toggleTodo: (id: string) => void
   deleteTodo: (id: string) => void
-  challenge: string
-  setChallenge: (v: string) => void
-  knowledge: string
-  setKnowledge: (v: string) => void
-  ideas: string
-  setIdeas: (v: string) => void
+  challenges: Note[]
+  addChallenge: (text: string) => void
+  deleteChallenge: (id: string) => void
+  knowledges: Note[]
+  addKnowledge: (text: string) => void
+  deleteKnowledge: (id: string) => void
+  ideaList: Note[]
+  addIdea: (text: string) => void
+  deleteIdea: (id: string) => void
 }
 
 export const useStore = create<StoreState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       activeTab: 'relax',
       setActiveTab: (tab) => set({ activeTab: tab }),
       relaxSub: 'reading',
@@ -43,14 +52,12 @@ export const useStore = create<StoreState>()(
       growthSub: 'certificate',
       setGrowthSub: (sub) => set({ growthSub: sub }),
       hiddenExams: [],
-      toggleHideExam: (id) => {
-        const { hiddenExams } = get()
-        if (hiddenExams.includes(id)) {
-          set({ hiddenExams: hiddenExams.filter((e) => e !== id) })
-        } else {
-          set({ hiddenExams: [...hiddenExams, id] })
-        }
-      },
+      toggleHideExam: (id) =>
+        set((state) => ({
+          hiddenExams: state.hiddenExams.includes(id)
+            ? state.hiddenExams.filter((e) => e !== id)
+            : [...state.hiddenExams, id],
+        })),
       todos: [],
       addTodo: (text, date) =>
         set((state) => ({
@@ -64,12 +71,33 @@ export const useStore = create<StoreState>()(
         set((state) => ({
           todos: state.todos.filter((t) => t.id !== id),
         })),
-      challenge: '',
-      setChallenge: (v) => set({ challenge: v }),
-      knowledge: '',
-      setKnowledge: (v) => set({ knowledge: v }),
-      ideas: '',
-      setIdeas: (v) => set({ ideas: v }),
+      challenges: [],
+      addChallenge: (text) =>
+        set((state) => ({
+          challenges: [{ id: Date.now().toString(), text, createdAt: new Date().toISOString() }, ...state.challenges],
+        })),
+      deleteChallenge: (id) =>
+        set((state) => ({
+          challenges: state.challenges.filter((n) => n.id !== id),
+        })),
+      knowledges: [],
+      addKnowledge: (text) =>
+        set((state) => ({
+          knowledges: [{ id: Date.now().toString(), text, createdAt: new Date().toISOString() }, ...state.knowledges],
+        })),
+      deleteKnowledge: (id) =>
+        set((state) => ({
+          knowledges: state.knowledges.filter((n) => n.id !== id),
+        })),
+      ideaList: [],
+      addIdea: (text) =>
+        set((state) => ({
+          ideaList: [{ id: Date.now().toString(), text, createdAt: new Date().toISOString() }, ...state.ideaList],
+        })),
+      deleteIdea: (id) =>
+        set((state) => ({
+          ideaList: state.ideaList.filter((n) => n.id !== id),
+        })),
     }),
     { name: 'workbench-storage' }
   )

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, Trash2, Plus, Lightbulb, Target, BookMarked, ChevronDown, ChevronUp } from 'lucide-react'
+import { Check, Trash2, Plus, Lightbulb, Target, BookMarked } from 'lucide-react'
 import { useStore } from '../store'
 
 const today = new Date().toISOString().split('T')[0]
@@ -9,50 +9,111 @@ interface BreakthroughCardProps {
   icon: React.ReactNode
   color: string
   desc: string
-  value: string
-  onChange: (v: string) => void
+  items: { id: string; text: string; createdAt: string }[]
+  onAdd: (text: string) => void
+  onDelete: (id: string) => void
+  placeholder: string
 }
 
-function BreakthroughCard({ title, icon, color, desc, value, onChange }: BreakthroughCardProps) {
+function BreakthroughCard({ title, icon, color, desc, items, onAdd, onDelete, placeholder }: BreakthroughCardProps) {
+  const [text, setText] = useState('')
   const [open, setOpen] = useState(false)
 
+  const handleAdd = () => {
+    if (!text.trim()) return
+    onAdd(text.trim())
+    setText('')
+  }
+
   return (
-    <div className="card" style={{ padding: 20, cursor: 'pointer' }} onClick={() => setOpen(!open)}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div className="card" style={{ padding: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => setOpen(!open)}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, color }}>
           {icon}
           <span style={{ fontWeight: 600 }}>{title}</span>
+          <span style={{ fontSize: 12, color: '#888', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: 10 }}>
+            {items.length}条
+          </span>
         </div>
-        {open ? <ChevronUp size={18} color="#888" /> : <ChevronDown size={18} color="#888" />}
+        <span style={{ fontSize: 13, color: '#888' }}>{open ? '收起' : '展开'}</span>
       </div>
       <p style={{ fontSize: 14, color: '#888', lineHeight: 1.6, marginTop: 8 }}>
         {desc}
       </p>
-      {value && !open && (
-        <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: 8, fontSize: 13, color: '#aaa' }}>
-          {value.length > 60 ? value.slice(0, 60) + '...' : value}
-        </div>
-      )}
+
       {open && (
-        <div style={{ marginTop: 12 }} onClick={(e) => e.stopPropagation()}>
-          <textarea
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={`点击输入你的${title}记录...`}
-            style={{
-              width: '100%',
-              minHeight: 100,
-              padding: 12,
-              borderRadius: 8,
-              border: '1px solid #2a2a4a',
-              background: '#1a1a2e',
-              color: '#e0e0e0',
-              fontSize: 14,
-              lineHeight: 1.6,
-              resize: 'vertical',
-              outline: 'none',
-            }}
-          />
+        <div style={{ marginTop: 16 }}>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+              placeholder={placeholder}
+              style={{
+                flex: 1,
+                padding: '10px 14px',
+                borderRadius: 8,
+                border: '1px solid #2a2a4a',
+                background: '#1a1a2e',
+                color: '#fff',
+                fontSize: 14,
+                outline: 'none',
+              }}
+            />
+            <button
+              onClick={handleAdd}
+              style={{
+                padding: '10px 18px',
+                borderRadius: 8,
+                border: 'none',
+                background: color,
+                color: '#1a1a2e',
+                fontWeight: 500,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <Plus size={16} />
+              添加
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {items.length === 0 && (
+              <div style={{ textAlign: 'center', padding: 20, color: '#666', fontSize: 14 }}>
+                还没有记录，添加第一条吧
+              </div>
+            )}
+            {items.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '10px 14px',
+                  background: '#1a1a2e',
+                  borderRadius: 8,
+                  border: '1px solid #2a2a4a',
+                }}
+              >
+                <span style={{ flex: 1, fontSize: 14, color: '#e0e0e0', lineHeight: 1.5 }}>{item.text}</span>
+                <span style={{ fontSize: 11, color: '#666', flexShrink: 0 }}>
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </span>
+                <button
+                  onClick={() => onDelete(item.id)}
+                  style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', padding: 4, borderRadius: 4 }}
+                  title="删除"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -64,12 +125,18 @@ export default function BreakthroughView() {
   const addTodo = useStore((s) => s.addTodo)
   const toggleTodo = useStore((s) => s.toggleTodo)
   const deleteTodo = useStore((s) => s.deleteTodo)
-  const challenge = useStore((s) => s.challenge)
-  const setChallenge = useStore((s) => s.setChallenge)
-  const knowledge = useStore((s) => s.knowledge)
-  const setKnowledge = useStore((s) => s.setKnowledge)
-  const ideas = useStore((s) => s.ideas)
-  const setIdeas = useStore((s) => s.setIdeas)
+
+  const challenges = useStore((s) => s.challenges)
+  const addChallenge = useStore((s) => s.addChallenge)
+  const deleteChallenge = useStore((s) => s.deleteChallenge)
+
+  const knowledges = useStore((s) => s.knowledges)
+  const addKnowledge = useStore((s) => s.addKnowledge)
+  const deleteKnowledge = useStore((s) => s.deleteKnowledge)
+
+  const ideaList = useStore((s) => s.ideaList)
+  const addIdea = useStore((s) => s.addIdea)
+  const deleteIdea = useStore((s) => s.deleteIdea)
 
   const [text, setText] = useState('')
   const [date, setDate] = useState(today)
@@ -93,24 +160,30 @@ export default function BreakthroughView() {
           icon={<Target size={20} />}
           color="#64b5f6"
           desc="设定 30 天小目标，每天进步 1%。可以是早起、阅读、运动或学习新技能。记录每一步突破。"
-          value={challenge}
-          onChange={setChallenge}
+          items={challenges}
+          onAdd={addChallenge}
+          onDelete={deleteChallenge}
+          placeholder="添加一条挑战记录..."
         />
         <BreakthroughCard
           title="知识体系"
           icon={<BookMarked size={20} />}
           color="#81c784"
           desc="建立自己的知识库，把学到的东西结构化整理。用思维导图或笔记工具记录核心概念和关联。"
-          value={knowledge}
-          onChange={setKnowledge}
+          items={knowledges}
+          onAdd={addKnowledge}
+          onDelete={deleteKnowledge}
+          placeholder="添加一条知识记录..."
         />
         <BreakthroughCard
           title="创意孵化"
           icon={<Lightbulb size={20} />}
           color="#ffb74d"
           desc="随时记录灵感，不评判、不删除。每周回顾一次，把有价值的想法转化为行动计划。"
-          value={ideas}
-          onChange={setIdeas}
+          items={ideaList}
+          onAdd={addIdea}
+          onDelete={deleteIdea}
+          placeholder="添加一条灵感记录..."
         />
       </div>
 
